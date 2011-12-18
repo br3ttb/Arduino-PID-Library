@@ -46,7 +46,7 @@ void PID::Compute()
 {
    if(!inAuto) return;
    unsigned long now = millis();
-   int timeChange = (now - lastTime);
+   unsigned long timeChange = (now - lastTime);
    if(timeChange>=SampleTime)
    {
       /*Compute all the working error variables*/
