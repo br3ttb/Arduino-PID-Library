@@ -1,16 +1,17 @@
 /**********************************************************************************************
- * Arduino PID Library - Version 1.0.1
+ * Arduino PID Library - Version 1.0.2
  * by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
  *
- * This Library is licensed under a GPLv3 License
+ * Modified by Jason Melvin to include feedforward and adjustable windup
+ * 
+ * This Code is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.
  **********************************************************************************************/
 
 #if ARDUINO >= 100
   #include "Arduino.h"
 #else
-  #include "WProgram.h"
+  #include <WProgram.h>
 #endif
-
 #include <PID_v1.h>
 
 /*Constructor (...)*********************************************************
@@ -18,22 +19,24 @@
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
 PID::PID(double* Input, double* Output, double* Setpoint,
-        double Kp, double Ki, double Kd, int ControllerDirection)
+        double Kp, double Ki, double Kd, double Kf, int ControllerDirection)
 {
-	PID::SetOutputLimits(0, 255);				//default output limit corresponds to 
-												//the arduino pwm limits
+	PID::SetOutputLimits(0, 255);	//default output limit corresponds to 
+						//the arduino pwm limits
+						
+	windupI = outMax; 		// default windup limit is outMax
+	sampleTime = 100;		// default Controller Sample Time is 0.1 seconds
+	ff_zero = 0; 			// default feedforward zero point is 0.0 (for temp control, set to ambient)
+	
+	PID::SetControllerDirection(ControllerDirection);
+	PID::SetTunings(Kp, Ki, Kd, Kf);
 
-    SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
-
-    PID::SetControllerDirection(ControllerDirection);
-    PID::SetTunings(Kp, Ki, Kd);
-
-    lastTime = millis()-SampleTime;				
-    inAuto = false;
-    myOutput = Output;
-    myInput = Input;
-    mySetpoint = Setpoint;
-		
+	lastTime = millis()-sampleTime;				
+	inAuto = false;
+	myOutput = Output;
+	myInput = Input;
+	mySetpoint = Setpoint;
+	
 }
  
  
@@ -47,26 +50,24 @@ void PID::Compute()
    if(!inAuto) return;
    unsigned long now = millis();
    unsigned long timeChange = (now - lastTime);
-   if(timeChange>=SampleTime)
+   if(timeChange>=sampleTime)
    {
       /*Compute all the working error variables*/
-	  double input = *myInput;
-      double error = *mySetpoint - input;
-      ITerm+= (ki * error);
-      if(ITerm > outMax) ITerm= outMax;
-      else if(ITerm < outMin) ITerm= outMin;
-      double dInput = (input - lastInput);
+	double input = *myInput; 				// read current input condition
+	double error = *mySetpoint - input; 		// error is difference between setpoint and input 
+	iTerm+= (ki * error); 					// add additional error to the integral term
+	iTerm = constrain( iTerm , -windupI , windupI );	// limit the integral term to +/- windup parameter
+	double dInput = (input - lastInput); 		// derivative is based on change in the input
  
       /*Compute PID Output*/
-      double output = kp * error + ITerm- kd * dInput;
+	double output = kp * error + iTerm - kd * dInput + kf * (*mySetpoint - ff_zero);
       
-	  if(output > outMax) output = outMax;
-      else if(output < outMin) output = outMin;
-	  *myOutput = output;
-	  
+	output = constrain( output , outMin , outMax );	// limit output to within min/max
+	*myOutput = output;				// write the current output
+ 
       /*Remember some variables for next time*/
-      lastInput = input;
-      lastTime = now;
+	lastInput = input;					// last input is for computing the derivative term
+	lastTime = now;					// last time is for determining when to recompute
    }
 }
 
@@ -76,40 +77,60 @@ void PID::Compute()
  * it's called automatically from the constructor, but tunings can also
  * be adjusted on the fly during normal operation
  ******************************************************************************/ 
-void PID::SetTunings(double Kp, double Ki, double Kd)
+void PID::SetTunings(double Kp, double Ki, double Kd, double Kf)
 {
-   if (Kp<0 || Ki<0 || Kd<0) return;
+   if (Kp<0 || Ki<0 || Kd<0 || Kf<0) return;
  
-   dispKp = Kp; dispKi = Ki; dispKd = Kd;
+   dispKp = Kp; dispKi = Ki; dispKd = Kd; dispKf = Kf;
    
-   double SampleTimeInSec = ((double)SampleTime)/1000;  
+   double sampleTimeInSec = ((double)sampleTime)/1000;  
    kp = Kp;
-   ki = Ki * SampleTimeInSec;
-   kd = Kd / SampleTimeInSec;
+   ki = Ki * sampleTimeInSec;
+   kd = Kd / sampleTimeInSec;
+   kf = Kf;
  
   if(controllerDirection ==REVERSE)
    {
       kp = (0 - kp);
       ki = (0 - ki);
       kd = (0 - kd);
+      kf = (0 - kf);
    }
 }
   
-/* SetSampleTime(...) *********************************************************
+/* SetsampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed	
  ******************************************************************************/
-void PID::SetSampleTime(int NewSampleTime)
+void PID::SetSampleTime(int NewsampleTime)
 {
-   if (NewSampleTime > 0)
+   if (NewsampleTime > 0)
    {
-      double ratio  = (double)NewSampleTime
-                      / (double)SampleTime;
+      double ratio  = (double)NewsampleTime
+                      / (double)sampleTime;
       ki *= ratio;
       kd /= ratio;
-      SampleTime = (unsigned long)NewSampleTime;
+      sampleTime = (unsigned long)NewsampleTime;
    }
 }
- 
+
+/* SetWindupI(...)********************
+*  Sets the windup limit for the integral term,
+*  which is otherwise limited to outMax
+***************************************/
+void PID::SetWindupI(double limit)
+{
+	if (limit > 0) windupI = limit;
+}
+
+/* SetFF_zero(...)********************
+*  Sets the zero point for the feedforward term,
+*  which is otherwise 0.0
+***************************************/
+void PID::SetFFzero(double zeropoint)
+{
+	ff_zero = zeropoint;
+}
+
 /* SetOutputLimits(...)****************************************************
  *     This function will be used far more often than SetInputLimits.  while
  *  the input to the controller will generally be in the 0-1023 range (which is
@@ -121,16 +142,16 @@ void PID::SetSampleTime(int NewSampleTime)
 void PID::SetOutputLimits(double Min, double Max)
 {
    if(Min >= Max) return;
+   if (outMax) windupI *= Max / outMax;
    outMin = Min;
    outMax = Max;
- 
    if(inAuto)
    {
 	   if(*myOutput > outMax) *myOutput = outMax;
 	   else if(*myOutput < outMin) *myOutput = outMin;
 	 
-	   if(ITerm > outMax) ITerm= outMax;
-	   else if(ITerm < outMin) ITerm= outMin;
+	   if(iTerm > outMax) iTerm= outMax;
+	   else if(iTerm < outMin) iTerm= outMin;
    }
 }
 
@@ -155,10 +176,10 @@ void PID::SetMode(int Mode)
  ******************************************************************************/ 
 void PID::Initialize()
 {
-   ITerm = *myOutput;
+   iTerm = *myOutput;
    lastInput = *myInput;
-   if(ITerm > outMax) ITerm = outMax;
-   else if(ITerm < outMin) ITerm = outMin;
+   if(iTerm > windupI) iTerm = windupI;
+   else if(iTerm < outMin) iTerm = outMin;
 }
 
 /* SetControllerDirection(...)*************************************************
@@ -171,9 +192,10 @@ void PID::SetControllerDirection(int Direction)
 {
    if(inAuto && Direction !=controllerDirection)
    {
-	  kp = (0 - kp);
-      ki = (0 - ki);
-      kd = (0 - kd);
+	kp = (0 - kp);
+	ki = (0 - ki);
+	kd = (0 - kd);
+	kf = (0 - kf);
    }   
    controllerDirection = Direction;
 }
@@ -186,6 +208,8 @@ void PID::SetControllerDirection(int Direction)
 double PID::GetKp(){ return  dispKp; }
 double PID::GetKi(){ return  dispKi;}
 double PID::GetKd(){ return  dispKd;}
+double PID::GetKf(){ return dispKf;}
+double PID::GetWi(){ return windupI;}
+double PID::GetFFzero(){ return ff_zero;}
 int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
 int PID::GetDirection(){ return controllerDirection;}
-
