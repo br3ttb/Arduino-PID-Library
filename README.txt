@@ -3,7 +3,7 @@
  
 * by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
  
-*
+** Modified by Jason Melvin <jwmelvin@gmail.com>
  
 * This Library is licensed under a GPLv3 License
 
