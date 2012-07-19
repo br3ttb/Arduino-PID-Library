@@ -72,7 +72,7 @@ class PID
 	unsigned long lastTime;
 	double ITerm, lastInput;
 
-	int SampleTime;
+	unsigned long SampleTime;
 	double outMin, outMax;
 	bool inAuto;
 };
