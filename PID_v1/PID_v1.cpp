@@ -20,6 +20,12 @@
 PID::PID(double* Input, double* Output, double* Setpoint,
         double Kp, double Ki, double Kd, int ControllerDirection)
 {
+	
+    myOutput = Output;
+    myInput = Input;
+    mySetpoint = Setpoint;
+	inAuto = false;
+	
 	PID::SetOutputLimits(0, 255);				//default output limit corresponds to 
 												//the arduino pwm limits
 
@@ -29,22 +35,18 @@ PID::PID(double* Input, double* Output, double* Setpoint,
     PID::SetTunings(Kp, Ki, Kd);
 
     lastTime = millis()-SampleTime;				
-    inAuto = false;
-    myOutput = Output;
-    myInput = Input;
-    mySetpoint = Setpoint;
-		
 }
  
  
 /* Compute() **********************************************************************
  *     This, as they say, is where the magic happens.  this function should be called
  *   every time "void loop()" executes.  the function will decide for itself whether a new
- *   pid Output needs to be computed
+ *   pid Output needs to be computed.  returns true when the output is computed,
+ *   false when nothing has been done.
  **********************************************************************************/ 
-void PID::Compute()
+bool PID::Compute()
 {
-   if(!inAuto) return;
+   if(!inAuto) return false;
    unsigned long now = millis();
    unsigned long timeChange = (now - lastTime);
    if(timeChange>=SampleTime)
@@ -67,7 +69,9 @@ void PID::Compute()
       /*Remember some variables for next time*/
       lastInput = input;
       lastTime = now;
+	  return true;
    }
+   else return false;
 }
 
 
