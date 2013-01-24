@@ -24,6 +24,7 @@ double Setpoint, Input, Output;
 PID myPID(&Input, &Output, &Setpoint,2,5,1, DIRECT);
 
 int WindowSize = 5000;
+int minWindow = 500;
 unsigned long windowStartTime;
 void setup()
 {
@@ -42,16 +43,16 @@ void setup()
 void loop()
 {
   Input = analogRead(0);
-  myPID.Compute();
 
   /************************************************
    * turn the output pin on/off based on pid output
    ************************************************/
   if(millis() - windowStartTime>WindowSize)
-  { //time to shift the Relay Window
+  { //time to shift the Relay Window and recalculate
     windowStartTime += WindowSize;
+    myPID.Compute();
   }
-  if(Output < millis() - windowStartTime) digitalWrite(RelayPin,HIGH);
+  if(Output > minWindow && Output < millis() - windowStartTime) digitalWrite(RelayPin,HIGH);
   else digitalWrite(RelayPin,LOW);
 
 }
