@@ -41,7 +41,7 @@ class PID
 										  //   once it is set in the constructor.
     void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 
                                           //   the PID calculation is performed.  default is 100
-										  
+	void ClearITerm();                    //   Called to clear out the accumulator value, in the event of a significant tuning change
 										  
 										  
   //Display functions ****************************************************************
@@ -71,7 +71,10 @@ class PID
 			  
 	unsigned long lastTime;
 	double ITerm, lastInput;
-
+    double priorInputs[5];
+    int priorInputCounter;
+    double priorInputsSum;
+    
 	unsigned long SampleTime;
 	double outMin, outMax;
 	bool inAuto;

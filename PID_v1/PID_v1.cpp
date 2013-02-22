@@ -21,6 +21,12 @@ PID::PID(double* Input, double* Output, double* Setpoint,
         double Kp, double Ki, double Kd, int ControllerDirection)
 {
 	
+    priorInputsSum = 0.0;
+    priorInputCounter = 0;
+    for (int i = 0; i<5; i++){
+        priorInputs[i] =  0.0;
+        
+    }
     myOutput = Output;
     myInput = Input;
     mySetpoint = Setpoint;
@@ -54,13 +60,33 @@ bool PID::Compute()
       /*Compute all the working error variables*/
 	  double input = *myInput;
       double error = *mySetpoint - input;
-      ITerm+= (ki * error);
+       if (((kp * error)+ ITerm) < outMax){ // Modified Tracking Anti-Windup.. if proportional output is maxed, don't wind up the accumulator
+           ITerm+= (ki * error);}
       if(ITerm > outMax) ITerm= outMax;
       else if(ITerm < outMin) ITerm= outMin;
-      double dInput = (input - lastInput);
+      
+       priorInputs[priorInputCounter] = input; // keep the last 5 input samples to be used for averaging for the differential multiplier Pd
+    
+       if (priorInputCounter < 4){
+           priorInputCounter++;}
+       else{
+           priorInputCounter = 0;
+       }
+       
+       double currentInputSum = 0.0;
+       
+       for (int i = 0; i < 5; i++){
+           currentInputSum += priorInputs[i];
+       }
+      currentInputSum = currentInputSum / 5;
+      
+       
+      double dInput = (currentInputSum - priorInputsSum); // average of last 5 input samples minus average of last 2-6 input samples
+      //double dInput = (input - lastInput);
+      priorInputsSum = currentInputSum;
  
       /*Compute PID Output*/
-      double output = kp * error + ITerm- kd * dInput;
+      double output = kp * error + ITerm - kd * dInput;
       
 	  if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
@@ -74,6 +100,13 @@ bool PID::Compute()
    else return false;
 }
 
+/* ClearITerm() **********************************************************************
+ *     Called to clear out the accumulator value, in the event of a significant tuning change
+ **********************************************************************************/
+void PID::ClearITerm()
+{
+    ITerm = 0;
+}
 
 /* SetTunings(...)*************************************************************
  * This function allows the controller's dynamic performance to be adjusted. 
@@ -88,7 +121,7 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
    
    double SampleTimeInSec = ((double)SampleTime)/1000;  
    kp = Kp;
-   ki = Ki * SampleTimeInSec;
+   ki = Ki * SampleTimeInSec/100;  // set the scale to allow reasonible Ki values > 1 for slow responding system
    kd = Kd / SampleTimeInSec;
  
   if(controllerDirection ==REVERSE)
