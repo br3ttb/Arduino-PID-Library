@@ -78,6 +78,7 @@ class PID
 			  
 	unsigned long lastTime;
 	double ITerm, lastInput;
+	unsigned long timeChange;
 
 	unsigned long SampleTime;
 	double secondsDivider;

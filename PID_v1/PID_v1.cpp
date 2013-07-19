@@ -48,16 +48,24 @@ bool PID::Compute()
 {
    if(!inAuto) return false;
    unsigned long now = PID::getTime();
-   unsigned long timeChange = (now - lastTime);
-   if(timeChange>=SampleTime)
+   timeChange = (now - lastTime);
+   if(SampleTime == 0 || timeChange>=SampleTime)
    {
       /*Compute all the working error variables*/
 	  double input = *myInput;
       double error = *mySetpoint - input;
-      ITerm+= (ki * error);
+
+      double dInput;
+      if (SampleTime > 0) {
+        ITerm += (ki * error);
+        dInput = (input - lastInput);
+      } else {
+        ITerm += (ki * error)*(((double)timeChange)/secondsDivider);
+        dInput = (input - lastInput)/(((double)timeChange)/secondsDivider);
+      }
+
       if(ITerm > outMax) ITerm= outMax;
       else if(ITerm < outMin) ITerm= outMin;
-      double dInput = (input - lastInput);
  
       /*Compute PID Output*/
       double output = kp * error + ITerm- kd * dInput;
@@ -86,10 +94,16 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
  
    dispKp = Kp; dispKi = Ki; dispKd = Kd;
 
+   if (SampleTime > 0) {
     double SampleTimeInSec = ((double)SampleTime)/secondsDivider;  
     kp = Kp;
     ki = Ki * SampleTimeInSec;
     kd = Kd / SampleTimeInSec;
+   } else {
+    kp = Kp;
+    ki = Ki;
+    kd = Kd;
+   }
  
   if(controllerDirection ==REVERSE)
    {
@@ -100,18 +114,25 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
 }
   
 /* SetSampleTime(...) *********************************************************
- * sets the period, in Milliseconds, at which the calculation is performed	
+ * sets the period, in Milliseconds, at which the calculation is performed
+ * If it's set to 0 or a negative value it will computer every time the
+ * function is called
  ******************************************************************************/
 void PID::SetSampleTime(int NewSampleTime)
 {
    if (NewSampleTime > 0)
    {
-      double ratio  = (double)NewSampleTime
-                      / (double)SampleTime;
+      double ratio;
+      if (SampleTime > 0)
+        ratio = (double)NewSampleTime/(double)SampleTime;
+      else
+        ratio = (double)NewSampleTime/(double)timeChange; // We will assume the user is calling Compute at a regular interval
+
       ki *= ratio;
       kd /= ratio;
       SampleTime = (unsigned long)NewSampleTime;
-   }
+   } else
+      SampleTime = 0; // We will compute every time the function is called
 }
  
 /* SetOutputLimits(...)****************************************************
