@@ -18,6 +18,7 @@ SetOutputLimits	KEYWORD2
 SetTunings	KEYWORD2
 SetControllerDirection	KEYWORD2
 SetSampleTime	KEYWORD2
+SetResolution	KEYWORD2
 GetKp	KEYWORD2
 GetKi	KEYWORD2
 GetKd	KEYWORD2
