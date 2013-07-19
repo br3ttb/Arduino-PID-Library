@@ -34,7 +34,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
     PID::SetControllerDirection(ControllerDirection);
     PID::SetTunings(Kp, Ki, Kd);
 
-    PID::setResolution(MILLIS); // Use a resolution of milliseconds by default
+    PID::SetResolution(MILLIS); // Use a resolution of milliseconds by default
 }
  
  
@@ -47,7 +47,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
 bool PID::Compute()
 {
    if(!inAuto) return false;
-   unsigned long now = PID::getTime();
+   unsigned long now = PID::GetTime();
    timeChange = (now - lastTime);
    if(SampleTime == 0 || timeChange>=SampleTime)
    {
@@ -203,27 +203,27 @@ void PID::SetControllerDirection(int Direction)
    controllerDirection = Direction;
 }
 
-/* getTime()*******************************************************************
+/* GetTime()*******************************************************************
  * Will get the current time either by using millis() or micros()
  ******************************************************************************/
-unsigned long PID::getTime()
+unsigned long PID::GetTime()
 {
   if (secondsDivider == 1000.0) return millis();
   return micros();
 }
 
-/* setResolution(...)**********************************************************
- * Will set the resolution of getTime().
+/* SetResolution(...)**********************************************************
+ * Will set the resolution of GetTime().
  * MILLIS will set the resolution to milliseconds while
  * MICROS will set the resolution to microseconds.
  ******************************************************************************/
-void PID::setResolution(int resolution)
+void PID::SetResolution(int resolution)
 {
   if (resolution == MILLIS)
     secondsDivider = 1000.0;
   else
     secondsDivider = 1000000.0;
-  lastTime = PID::getTime()-SampleTime; // Update last time variable
+  lastTime = PID::GetTime()-SampleTime; // Update last time variable
 }
 
 /* Status Funcions*************************************************************

@@ -43,7 +43,7 @@ class PID
 										  //   once it is set in the constructor.
     void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 
                                           //   the PID calculation is performed.  default is 100
-    void setResolution(int);			  // * Set the resolution of the getTime() function. 
+    void SetResolution(int);			  // * Set the resolution of the GetTime() function. 
     									  //   MILLIS sets the resolution to milliseconds.
     									  //   MICROS sets the resolution to microseconds.
 										  
@@ -58,7 +58,7 @@ class PID
 
   private:
 	void Initialize();
-	unsigned long getTime();    // * This will call either millis() or micros()
+	unsigned long GetTime();    // * This will call either millis() or micros()
 	                            //   depending on the used resolution.
 	
 	double dispKp;				// * we'll hold on to the tuning parameters in user-entered 
