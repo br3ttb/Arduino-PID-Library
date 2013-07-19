@@ -34,7 +34,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
     PID::SetControllerDirection(ControllerDirection);
     PID::SetTunings(Kp, Ki, Kd);
 
-    lastTime = millis()-SampleTime;				
+    PID::setResolution(MILLIS); // Use a resolution of milliseconds by default
 }
  
  
@@ -47,7 +47,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
 bool PID::Compute()
 {
    if(!inAuto) return false;
-   unsigned long now = millis();
+   unsigned long now = PID::getTime();
    unsigned long timeChange = (now - lastTime);
    if(timeChange>=SampleTime)
    {
@@ -85,11 +85,11 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
    if (Kp<0 || Ki<0 || Kd<0) return;
  
    dispKp = Kp; dispKi = Ki; dispKd = Kd;
-   
-   double SampleTimeInSec = ((double)SampleTime)/1000;  
-   kp = Kp;
-   ki = Ki * SampleTimeInSec;
-   kd = Kd / SampleTimeInSec;
+
+    double SampleTimeInSec = ((double)SampleTime)/secondsDivider;  
+    kp = Kp;
+    ki = Ki * SampleTimeInSec;
+    kd = Kd / SampleTimeInSec;
  
   if(controllerDirection ==REVERSE)
    {
@@ -180,6 +180,29 @@ void PID::SetControllerDirection(int Direction)
       kd = (0 - kd);
    }   
    controllerDirection = Direction;
+}
+
+/* getTime()*******************************************************************
+ * Will get the current time either by using millis() or micros()
+ ******************************************************************************/
+unsigned long PID::getTime()
+{
+  if (secondsDivider == 1000.0) return millis();
+  return micros();
+}
+
+/* setResolution(...)**********************************************************
+ * Will set the resolution of getTime().
+ * MILLIS will set the resolution to milliseconds while
+ * MICROS will set the resolution to microseconds.
+ ******************************************************************************/
+void PID::setResolution(int resolution)
+{
+  if (resolution == MILLIS)
+    secondsDivider = 1000.0;
+  else
+    secondsDivider = 1000000.0;
+  lastTime = PID::getTime()-SampleTime; // Update last time variable
 }
 
 /* Status Funcions*************************************************************
