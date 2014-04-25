@@ -32,9 +32,8 @@ PID::PID(double* Input, double* Output, double* Setpoint,
     SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
 
     PID::SetControllerDirection(ControllerDirection);
-    PID::SetTunings(Kp, Ki, Kd);
-
     PID::SetResolution(MILLIS); // Use a resolution of milliseconds by default
+    PID::SetTunings(Kp, Ki, Kd);
 }
  
  
