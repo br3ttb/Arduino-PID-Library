@@ -24,7 +24,7 @@ double Setpoint, Input, Output;
 
 //Specify the links and initial tuning parameters
 double Kp=2, Ki=5, Kd=1;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, PID::DIRECT);
 
 int WindowSize = 5000;
 unsigned long windowStartTime;
@@ -40,7 +40,7 @@ void setup()
   myPID.SetOutputLimits(0, WindowSize);
 
   //turn the PID on
-  myPID.SetMode(AUTOMATIC);
+  myPID.SetMode(PID::AUTOMATIC);
 }
 
 void loop()

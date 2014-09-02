@@ -18,7 +18,7 @@
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
 PID::PID(double* Input, double* Output, double* Setpoint,
-        double Kp, double Ki, double Kd, int ControllerDirection)
+        double Kp, double Ki, double Kd, direction_t ControllerDirection)
 {
 	
     myOutput = Output;
@@ -139,11 +139,11 @@ void PID::SetOutputLimits(double Min, double Max)
 }
 
 /* SetMode(...)****************************************************************
- * Allows the controller Mode to be set to manual (0) or Automatic (non-zero)
+ * Allows the controller Mode to be set to MANUAL (0) or AUTOMATIC (1)
  * when the transition from manual to auto occurs, the controller is
  * automatically initialized
  ******************************************************************************/ 
-void PID::SetMode(int Mode)
+void PID::SetMode(mode_t Mode)
 {
     bool newAuto = (Mode == AUTOMATIC);
     if(newAuto == !inAuto)
@@ -171,7 +171,7 @@ void PID::Initialize()
  * know which one, because otherwise we may increase the output when we should
  * be decreasing.  This is called from the constructor.
  ******************************************************************************/
-void PID::SetControllerDirection(int Direction)
+void PID::SetControllerDirection(direction_t Direction)
 {
    if(inAuto && Direction !=controllerDirection)
    {
