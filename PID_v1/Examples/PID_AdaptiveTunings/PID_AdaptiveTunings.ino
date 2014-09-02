@@ -19,7 +19,7 @@ double aggKp=4, aggKi=0.2, aggKd=1;
 double consKp=1, consKi=0.05, consKd=0.25;
 
 //Specify the links and initial tuning parameters
-PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
+PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, PID::Direct);
 
 void setup()
 {
@@ -28,7 +28,7 @@ void setup()
   Setpoint = 100;
 
   //turn the PID on
-  myPID.SetMode(AUTOMATIC);
+  myPID.SetMode(PID::Automatic);
 }
 
 void loop()

@@ -9,10 +9,10 @@ class PID
   public:
 
   //Constants used in some of the functions below
-  #define AUTOMATIC	1
-  #define MANUAL	0
-  #define DIRECT  0
-  #define REVERSE  1
+    static const int Automatic = 1;
+    static const int Manual = 0;
+    static const int Direct = 0;
+    static const int Reverse = 1;
 
   //commonly used functions **************************************************************************
     PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
@@ -35,8 +35,8 @@ class PID
     void SetTunings(double, double,       // * While most users will set the tunings once in the 
                     double);         	  //   constructor, this function gives the user the option
                                           //   of changing tunings during runtime for Adaptive control
-	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. DIRECT
-										  //   means the output will increase when error is positive. REVERSE
+	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. Direct
+										  //   means the output will increase when error is positive. Reverse
 										  //   means the opposite.  it's very unlikely that this will be needed
 										  //   once it is set in the constructor.
     void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 

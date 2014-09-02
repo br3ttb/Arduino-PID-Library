@@ -28,7 +28,7 @@ GetDirection	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
-AUTOMATIC	LITERAL1
-MANUAL	LITERAL1
-DIRECT	LITERAL1
-REVERSE	LITERAL1
+Automatic	LITERAL1
+Manual	LITERAL1
+Direct	LITERAL1
+Reverse	LITERAL1
