@@ -1,0 +1,19 @@
+{
+  "name": "PID",
+  "keywords": "pid, integral, controller, industrial",
+  "description": "A proportional-integral-derivative controller is a control loop feedback mechanism (controller) widely used in industrial control systems",
+  "authors":
+  {
+    "name": "Brett Beauregard",
+    "email": "br3ttb@gmail.com",
+    "url": "https://github.com/br3ttb"
+  },
+  "include": "PID_v1",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/br3ttb/Arduino-PID-Library.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
+}
