@@ -7,28 +7,32 @@
  *
  *   to connect them together we use "time proportioning
  * control"  it's essentially a really slow version of PWM.
- * first we decide on a window size (5000mS say.) we then 
+ * first we decide on a window size (5000mS say.) we then
  * set the pid to adjust its output between 0 and that window
  * size.  lastly, we add some logic that translates the PID
- * output into "Relay On Time" with the remainder of the 
+ * output into "Relay On Time" with the remainder of the
  * window being "Relay Off Time"
  ********************************************************/
 
 #include <PID_v1.h>
-#define RelayPin 6
+
+#define PIN_INPUT 0
+#define RELAY_PIN 6
 
 //Define Variables we'll be connecting to
 double Setpoint, Input, Output;
 
 //Specify the links and initial tuning parameters
-PID myPID(&Input, &Output, &Setpoint,2,5,1, DIRECT);
+double Kp=2, Ki=5, Kd=1;
+PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
 int WindowSize = 5000;
 unsigned long windowStartTime;
+
 void setup()
 {
   windowStartTime = millis();
-  
+
   //initialize the variables we're linked to
   Setpoint = 100;
 
@@ -41,18 +45,18 @@ void setup()
 
 void loop()
 {
-  Input = analogRead(0);
+  Input = analogRead(PIN_INPUT);
   myPID.Compute();
 
   /************************************************
    * turn the output pin on/off based on pid output
    ************************************************/
-  if(millis() - windowStartTime>WindowSize)
+  if (millis() - windowStartTime > WindowSize)
   { //time to shift the Relay Window
     windowStartTime += WindowSize;
   }
-  if(Output < millis() - windowStartTime) digitalWrite(RelayPin,HIGH);
-  else digitalWrite(RelayPin,LOW);
+  if (Output < millis() - windowStartTime) digitalWrite(RELAY_PIN, HIGH);
+  else digitalWrite(RELAY_PIN, LOW);
 
 }
 

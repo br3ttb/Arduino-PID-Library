@@ -11,6 +11,9 @@
 
 #include <PID_v1.h>
 
+#define PIN_INPUT 0
+#define PIN_OUTPUT 3
+
 //Define Variables we'll be connecting to
 double Setpoint, Input, Output;
 
@@ -24,7 +27,7 @@ PID myPID(&Input, &Output, &Setpoint, consKp, consKi, consKd, DIRECT);
 void setup()
 {
   //initialize the variables we're linked to
-  Input = analogRead(0);
+  Input = analogRead(PIN_INPUT);
   Setpoint = 100;
 
   //turn the PID on
@@ -33,10 +36,10 @@ void setup()
 
 void loop()
 {
-  Input = analogRead(0);
-  
+  Input = analogRead(PIN_INPUT);
+
   double gap = abs(Setpoint-Input); //distance away from setpoint
-  if(gap<10)
+  if (gap < 10)
   {  //we're close to setpoint, use conservative tuning parameters
     myPID.SetTunings(consKp, consKi, consKd);
   }
@@ -45,9 +48,9 @@ void loop()
      //we're far from setpoint, use aggressive tuning parameters
      myPID.SetTunings(aggKp, aggKi, aggKd);
   }
-  
+
   myPID.Compute();
-  analogWrite(3,Output);
+  analogWrite(PIN_OUTPUT, Output);
 }
 
 
