@@ -98,6 +98,13 @@ void PID::SetTunings(double Kp, double Ki, double Kd)
       kd = (0 - kd);
    }
 }
+
+/* ResetI() *******************************************************************
+ * Resets the build up integral term of the PID	
+ ******************************************************************************/
+void PID::ResetI() {
+	ITerm = 0;
+}
   
 /* SetSampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed	

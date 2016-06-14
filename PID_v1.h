@@ -35,6 +35,10 @@ class PID
     void SetTunings(double, double,       // * While most users will set the tunings once in the 
                     double);         	  //   constructor, this function gives the user the option
                                           //   of changing tunings during runtime for Adaptive control
+                                          
+    void ResetI();						  // * Resets Integral term of PID: Useful especially for multicopters.
+										  // * This allows to reset this term when the multicopter descends to 
+										  // * the ground and contionues the flight again later.
 	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. DIRECT
 										  //   means the output will increase when error is positive. REVERSE
 										  //   means the opposite.  it's very unlikely that this will be needed
