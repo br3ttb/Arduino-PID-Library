@@ -74,6 +74,40 @@ bool PID::Compute()
    else return false;
 }
 
+/* Compute(double* newSetpoint) ****************************************************
+ * Same as the Compute() function, but takes a different setpoint as a parameter.
+ * This allows for user defined alterations to the direction of the PID controller
+ **********************************************************************************/ 
+
+bool PID::Compute(double* newSetpoint)
+{
+   if(!inAuto) return false;
+   unsigned long now = millis();
+   unsigned long timeChange = (now - lastTime);
+   if(timeChange>=SampleTime)
+   {
+      /*Compute all the working error variables*/
+      float input = *myInput;
+      float error = *newSetpoint - input;
+      ITerm+= (ki * error);
+      if(ITerm > outMax) ITerm= outMax;
+      else if(ITerm < outMin) ITerm= outMin;
+      float dInput = (input - lastInput);
+
+      /*Compute PID Output*/
+      float output = kp * error + ITerm- kd * dInput;
+
+      if(output > outMax) output = outMax;
+      else if(output < outMin) output = outMin;
+      *myOutput = output;
+
+      /*Remember some variables for next time*/
+      lastInput = input;
+      lastTime = now;
+      return true;
+   }
+   else return false;
+}
 
 /* SetTunings(...)*************************************************************
  * This function allows the controller's dynamic performance to be adjusted. 
