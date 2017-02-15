@@ -16,6 +16,7 @@ SetMode	KEYWORD2
 Compute	KEYWORD2
 SetOutputLimits	KEYWORD2
 SetTunings	KEYWORD2
+ResetI	KEYWORD2
 SetControllerDirection	KEYWORD2
 SetSampleTime	KEYWORD2
 GetKp	KEYWORD2
