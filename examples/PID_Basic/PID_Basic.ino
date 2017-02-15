@@ -13,7 +13,7 @@ double Setpoint, Input, Output;
 
 //Specify the links and initial tuning parameters
 double Kp=2, Ki=5, Kd=1;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, PID::DIRECT);
 
 void setup()
 {
@@ -22,7 +22,7 @@ void setup()
   Setpoint = 100;
 
   //turn the PID on
-  myPID.SetMode(AUTOMATIC);
+  myPID.SetMode(PID::AUTOMATIC);
 }
 
 void loop()
