@@ -51,6 +51,10 @@ class PID
 	int GetMode();						  //  inside the PID.
 	int GetDirection();					  //
 
+  double GetLastPTerm();
+  double GetLastITerm();
+  double GetLastDTerm();
+
   private:
 	void Initialize();
 
@@ -71,6 +75,8 @@ class PID
 
 	unsigned long lastTime;
 	double ITerm, lastInput;
+
+  double lastPTerm, lastITerm, lastDTerm; // last P/I/D terms calculated
 
 	unsigned long SampleTime;
 	double outMin, outMax;

@@ -59,8 +59,11 @@ bool PID::Compute()
       else if(ITerm < outMin) ITerm= outMin;
       double dInput = (input - lastInput);
 
-      /*Compute PID Output*/
-      double output = kp * error + ITerm- kd * dInput;
+      /*Compute PID Output and store last values*/
+      lastPTerm = kp * error;
+      lastITerm = ITerm;
+      lastDTerm = -kd * dInput;
+      double output = lastPTerm + lastITerm + lastDTerm;
 
 	  if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
@@ -192,3 +195,7 @@ double PID::GetKi(){ return  dispKi;}
 double PID::GetKd(){ return  dispKd;}
 int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
 int PID::GetDirection(){ return controllerDirection;}
+
+double PID::GetLastPTerm() { return lastPTerm; }
+double PID::GetLastITerm() { return lastITerm; }
+double PID::GetLastDTerm() { return lastDTerm; }
