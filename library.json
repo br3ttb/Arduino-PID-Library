@@ -13,7 +13,7 @@
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/br3ttb/Arduino-PID-Library.git"
+    "url": "https://github.com/egueli/Arduino-PID-Library.git"
   },
   "frameworks": "arduino"
 }
