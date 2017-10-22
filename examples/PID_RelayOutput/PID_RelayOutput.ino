@@ -31,6 +31,8 @@ unsigned long windowStartTime;
 
 void setup()
 {
+  pinMode(RELAY_PIN, OUTPUT);
+
   windowStartTime = millis();
 
   //initialize the variables we're linked to
