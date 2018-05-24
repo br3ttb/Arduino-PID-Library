@@ -1,0 +1,19 @@
+{
+  "name": "PID",
+  "keywords": "PID, controller, signal",
+  "description": "A PID controller seeks to keep some input variable close to a desired setpoint by adjusting an output. The way in which it does this can be 'tuned' by adjusting three parameters (P,I,D).",
+  "url": "http://playground.arduino.cc/Code/PIDLibrary",
+  "include": "PID_v1",
+  "authors":
+  [
+    {
+      "name": "Brett Beauregard"
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/br3ttb/Arduino-PID-Library.git"
+  },
+  "frameworks": "arduino"
+}
