@@ -71,9 +71,6 @@ bool PID::Compute()
       /*Add Proportional on Measurement, if P_ON_M is specified*/
       if(!pOnE) outputSum-= kp * dInput;
 
-      if(outputSum > outMax) outputSum= outMax;
-      else if(outputSum < outMin) outputSum= outMin;
-
       /*Add Proportional on Error, if P_ON_E is specified*/
 	   double output;
       if(pOnE) output = kp * error;
@@ -81,6 +78,9 @@ bool PID::Compute()
 
       /*Compute Rest of PID Output*/
       output += outputSum - kd * dInput;
+
+      if(outputSum > outMax) outputSum= outMax;
+      else if(outputSum < outMin) outputSum= outMin;
 
 	    if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
