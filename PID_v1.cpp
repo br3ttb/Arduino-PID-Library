@@ -66,21 +66,23 @@ bool PID::Compute()
       double input = *myInput;
       double error = *mySetpoint - input;
       double dInput = (input - lastInput);
+      double output;
+
+      /*Compute integral*/
       outputSum+= (ki * error);
 
-      /*Add Proportional on Measurement, if P_ON_M is specified*/
-      if(!pOnE) outputSum-= kp * dInput;
+      /*Compute proportional*/
+      if(pOnE) output = kp * error;
+      else { outputSum -= kp * dInput; output = 0; }
 
       if(outputSum > outMax) outputSum= outMax;
       else if(outputSum < outMin) outputSum= outMin;
 
-      /*Add Proportional on Error, if P_ON_E is specified*/
-	   double output;
-      if(pOnE) output = kp * error;
-      else output = 0;
+      /*Compute derivative*/
+      output -= kd * dInput;
 
-      /*Compute Rest of PID Output*/
-      output += outputSum - kd * dInput;
+      /*Merge*/
+      output += outputSum;
 
 	    if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
