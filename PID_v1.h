@@ -1,6 +1,6 @@
 #ifndef PID_v1_h
 #define PID_v1_h
-#define LIBRARY_VERSION	1.2.1
+#define LIBRARY_VERSION	1.2.2
 
 class PID2
 {
@@ -17,11 +17,11 @@ class PID2
   #define P_ON_E 1
 
   //commonly used functions **************************************************************************
-    PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
+    PID2(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
         double, double, double, int, int);//   Setpoint.  Initial tuning parameters are also set here.
                                           //   (overload for specifying proportional mode)
 
-    PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
+    PID2(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
         double, double, double, int);     //   Setpoint.  Initial tuning parameters are also set here
 	
     void SetMode(int Mode);               // * sets PID to either Manual (0) or Auto (non-0)
