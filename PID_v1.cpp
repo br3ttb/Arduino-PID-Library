@@ -177,7 +177,7 @@ void PID2::SetMode(int Mode)
     bool newAuto = (Mode == AUTOMATIC);
     if(newAuto && !inAuto)
     {  /*we just went from manual to auto*/
-        PID::Initialize();
+        PID2::Initialize();
     }
     inAuto = newAuto;
 }
