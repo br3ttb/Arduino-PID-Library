@@ -204,7 +204,7 @@ void PID2::SetControllerDirection(int Direction)
 {
    if(inAuto && Direction !=controllerDirection)
    {
-	    kp = (0 - kp);
+      kp = (0 - kp);
       ki = (0 - ki);
       kd = (0 - kd);
    }
