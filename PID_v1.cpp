@@ -1,5 +1,5 @@
 /**********************************************************************************************
- * Arduino PID Library - Version 1.2.2
+ * Arduino Makeblock PID Library - Version 0.0.1
  * by Brett Beauregard <br3ttb@gmail.com> brettbeauregard.com
  *
  * This Library is licensed under the MIT License
