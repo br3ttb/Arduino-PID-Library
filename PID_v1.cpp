@@ -25,13 +25,13 @@ PID2::PID2(double* Input, double* Output, double* Setpoint,
     mySetpoint = Setpoint;
     inAuto = false;
 
-    PID::SetOutputLimits(0, 255);				//default output limit corresponds to
+    PID2::SetOutputLimits(0, 255);				//default output limit corresponds to
 								//the arduino pwm limits
 
     SampleTime = 100;						//default Controller Sample Time is 0.1 seconds
 
-    PID::SetControllerDirection(ControllerDirection);
-    PID::SetTunings(Kp, Ki, Kd, POn);
+    PID2::SetControllerDirection(ControllerDirection);
+    PID2::SetTunings(Kp, Ki, Kd, POn);
 
     lastTime = millis()-SampleTime;
 }
@@ -43,7 +43,7 @@ PID2::PID2(double* Input, double* Output, double* Setpoint,
 
 PID2::PID2(double* Input, double* Output, double* Setpoint,
         double Kp, double Ki, double Kd, int ControllerDirection)
-    :PID::PID(Input, Output, Setpoint, Kp, Ki, Kd, P_ON_E, ControllerDirection)
+    :PID2::PID2(Input, Output, Setpoint, Kp, Ki, Kd, P_ON_E, ControllerDirection)
 {
 
 }
@@ -216,9 +216,9 @@ void PID2::SetControllerDirection(int Direction)
  * functions query the internal state of the PID.  they're here for display
  * purposes.  this are the functions the PID Front-end uses for example
  ******************************************************************************/
-double PID::GetKp(){ return  dispKp; }
-double PID::GetKi(){ return  dispKi;}
-double PID::GetKd(){ return  dispKd;}
-int PID::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
-int PID::GetDirection(){ return controllerDirection;}
+double PID2::GetKp(){ return  dispKp; }
+double PID2::GetKi(){ return  dispKi;}
+double PID2::GetKd(){ return  dispKd;}
+int PID2::GetMode(){ return  inAuto ? AUTOMATIC : MANUAL;}
+int PID2::GetDirection(){ return controllerDirection;}
 
