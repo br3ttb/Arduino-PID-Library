@@ -14,7 +14,7 @@
 #include <PID_v1.h>
 
 /*Constructor (...)*********************************************************
- *    The parameters specified here are those for for which we can't set up
+ *    The parameters specified here are those for which we can't set up
  *    reliable defaults, so we need to have the user set them.
  ***************************************************************************/
 PID2::PID2(double* Input, double* Output, double* Setpoint,
@@ -26,9 +26,9 @@ PID2::PID2(double* Input, double* Output, double* Setpoint,
     inAuto = false;
 
     PID::SetOutputLimits(0, 255);				//default output limit corresponds to
-												//the arduino pwm limits
+								//the arduino pwm limits
 
-    SampleTime = 100;							//default Controller Sample Time is 0.1 seconds
+    SampleTime = 100;						//default Controller Sample Time is 0.1 seconds
 
     PID::SetControllerDirection(ControllerDirection);
     PID::SetTunings(Kp, Ki, Kd, POn);
@@ -75,7 +75,7 @@ bool PID2::Compute()
       else if(outputSum < outMin) outputSum= outMin;
 
       /*Add Proportional on Error, if P_ON_E is specified*/
-	   double output;
+      double output;
       if(pOnE) output = kp * error;
       else output = 0;
 
