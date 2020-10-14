@@ -1,0 +1,5 @@
+Gemfile.lock
+vendor
+# C++ stuff
+*.bin
+*.bin.dSYM
