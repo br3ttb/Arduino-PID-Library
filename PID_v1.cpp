@@ -130,6 +130,8 @@ void PID::SetTunings(double Kp, double Ki, double Kd){
 
 /* SetSampleTime(...) *********************************************************
  * sets the period, in Milliseconds, at which the calculation is performed
+ * 15 May 2021 gfp - a value of zero will force Compute() to generate a new output every time it is called
+ * but avoids the 'divide-by-zero' problem
  ******************************************************************************/
 void PID::SetSampleTime(int NewSampleTime)
 {
@@ -139,7 +141,11 @@ void PID::SetSampleTime(int NewSampleTime)
                       / (double)SampleTime;
       ki *= ratio;
       kd /= ratio;
-      SampleTime = (unsigned long)NewSampleTime;
+      //SampleTime = (unsigned long)NewSampleTime;
+   }
+   else if (NewSampleTime == 0)
+   {
+     SampleTime = (unsigned long)NewSampleTime;
    }
 }
 

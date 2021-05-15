@@ -9,3 +9,7 @@
    http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
 
  - For function documentation see:  http://playground.arduino.cc/Code/PIDLibrary
+
+ - To synchronize PID::Compute with an external timing source such as a TIMER ISR, 
+	call SetSampleTime() with an argument of zero. This will force Compute to generate a
+	new output value each time it is called.
