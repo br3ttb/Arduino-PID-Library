@@ -75,9 +75,8 @@ bool PID::Compute()
       else if(outputSum < outMin) outputSum= outMin;
 
       /*Add Proportional on Error, if P_ON_E is specified*/
-	   double output;
+	   double output = 0;
       if(pOnE) output = kp * error;
-      else output = 0;
 
       /*Compute Rest of PID Output*/
       output += outputSum - kd * dInput;
