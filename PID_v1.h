@@ -17,12 +17,12 @@ class PID
   #define P_ON_E 1
 
   //commonly used functions **************************************************************************
-    PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
-        double, double, double, int, int);//   Setpoint.  Initial tuning parameters are also set here.
+    PID(double*, double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
+        double, double, double, double, int, int);//   Setpoint.  Initial tuning parameters are also set here.
                                           //   (overload for specifying proportional mode)
 
-    PID(double*, double*, double*,        // * constructor.  links the PID to the Input, Output, and 
-        double, double, double, int);     //   Setpoint.  Initial tuning parameters are also set here
+    PID(double*, double*, double*, double*,       // * constructor.  links the PID to the Input, Output, and 
+        double, double, double, double, int);     //   Setpoint.  Initial tuning parameters are also set here
 	
     void SetMode(int Mode);               // * sets PID to either Manual (0) or Auto (non-0)
 
@@ -39,9 +39,9 @@ class PID
 
   //available but not commonly used functions ********************************************************
     void SetTunings(double, double,       // * While most users will set the tunings once in the 
-                    double);         	    //   constructor, this function gives the user the option
+                    double, double);         	    //   constructor, this function gives the user the option
                                           //   of changing tunings during runtime for Adaptive control
-    void SetTunings(double, double,       // * overload for specifying proportional mode
+    void SetTunings(double, double, double       // * overload for specifying proportional mode
                     double, int);         	  
 
 	void SetControllerDirection(int);	  // * Sets the Direction, or "Action" of the controller. DIRECT
@@ -74,13 +74,13 @@ class PID
 	int controllerDirection;
 	int pOn;
 
-    double *myInput;              // * Pointers to the Input, Output, and Setpoint variables
+    double *myInput;// * Pointers to the Input, Output, and Setpoint variables
     double *myOutput;             //   This creates a hard link between the variables and the 
     double *mySetpoint;           //   PID, freeing the user from having to constantly tell us
-                                  //   what these values are.  with pointers we'll just know.
+    double *myInput2;                              //   what these values are.  with pointers we'll just know.
 			  
 	unsigned long lastTime;
-	double outputSum, lastInput;
+	double outputSum, lastInput, lastInput2;
 
 	unsigned long SampleTime;
 	double outMin, outMax;
