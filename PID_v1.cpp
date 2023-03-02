@@ -182,6 +182,20 @@ void PID::SetMode(int Mode)
     inAuto = newAuto;
 }
 
+/* GetIntegral(...)*************************************************************
+ * Get Integral term for user access to anti-windup schemes
+ ******************************************************************************/
+double PID::GetIntegral(){
+    return outputSum; 
+}
+
+/* SetIntegral(...)*************************************************************
+ * Set Integral term for user access to anti-windup schemes
+ ******************************************************************************/
+void PID::SetIntegral(double Integral){
+    outputSum = Integral; 
+}
+
 /* Initialize()****************************************************************
  *	does all the things that need to happen to ensure a bumpless transfer
  *  from manual to automatic mode.
