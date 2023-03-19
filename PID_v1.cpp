@@ -82,9 +82,15 @@ bool PID::Compute()
       /*Compute Rest of PID Output*/
       output += outputSum - kd * dInput;
 
-	    if(output > outMax) output = outMax;
-      else if(output < outMin) output = outMin;
-	    *myOutput = output;
+      if(output > outMax){
+          outputSum -= output - outMax; // backcalculate integral to feasability
+          output = outMax;
+      }
+      else if(output < outMin) {
+          outputSum += outMin - output; // backcalculate integral to feasability
+          output = outMin;
+      }
+      *myOutput = output;
 
       /*Remember some variables for next time*/
       lastInput = input;
