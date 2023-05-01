@@ -18,6 +18,8 @@
 
 #define PIN_INPUT 0
 #define RELAY_PIN 6
+#define RELAY_ON LOW
+#define RELAY_OFF HIGH
 
 //Define Variables we'll be connecting to
 double Setpoint, Input, Output;
@@ -55,8 +57,14 @@ void loop()
   { //time to shift the Relay Window
     windowStartTime += WindowSize;
   }
-  if (Output < millis() - windowStartTime) digitalWrite(RELAY_PIN, HIGH);
-  else digitalWrite(RELAY_PIN, LOW);
+  if (Output > millis() - windowStartTime)
+  {
+    digitalWrite(RELAY_PIN, RELAY_ON);
+  }
+  else
+  {
+    digitalWrite(RELAY_PIN, RELAY_OFF);
+  }
 
 }
 
