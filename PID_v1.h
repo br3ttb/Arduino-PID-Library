@@ -50,6 +50,7 @@ class PID
 										  //   once it is set in the constructor.
     void SetSampleTime(int);              // * sets the frequency, in Milliseconds, with which 
                                           //   the PID calculation is performed.  default is 100
+    void SetIntegral(double);                // * sets the internal Integral term, in output units  
 										  
 										  
 										  
@@ -59,6 +60,7 @@ class PID
 	double GetKd();						  // where it's important to know what is actually 
 	int GetMode();						  //  inside the PID.
 	int GetDirection();					  //
+	double GetIntegral();					  //
 
   private:
 	void Initialize();
