@@ -1,0 +1,25 @@
+# https://github.com/Arduino-CI/arduino_ci/issues/159
+# copied from vendor/bundle/ruby/2.6.0/gems/arduino_ci-0.3.0/misc/default.yml
+platforms:
+  mega2560:
+    board: arduino:avr:mega:cpu=atmega2560
+    package: arduino:avr
+    gcc:
+      features:
+      defines:
+        - __AVR_ATmega2560__
+        # added this line
+        - ARDUINO_CI
+      warnings:
+      flags:
+
+unittest:
+  platforms:
+    - mega2560
+  testfiles:
+    reject:
+      - "Common.cpp"
+
+compile:
+  platforms:
+    - mega2560
