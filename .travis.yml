@@ -1,0 +1,20 @@
+language: python
+python:
+    - "2.7"
+
+# Cache PlatformIO packages using Travis CI container-based infrastructure
+sudo: false
+cache:
+    directories:
+        - "~/.platformio"
+
+env:
+    - PLATFORMIO_CI_SRC=examples/PID_AdaptiveTunings/PID_AdaptiveTunings.ino
+    - PLATFORMIO_CI_SRC=examples/PID_Basic/PID_Basic.ino
+    - PLATFORMIO_CI_SRC=examples/PID_RelayOutput/PID_RelayOutput.ino
+
+install:
+    - pip install -U platformio
+
+script:
+    - platformio ci --lib=. --board=uno --board=megaatmega1280
